@@ -3,7 +3,10 @@ package fuzs.horseexpert.client.gui.screens.inventory.tooltip;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
+import fuzs.horseexpert.HorseExpert;
 import fuzs.horseexpert.world.inventory.tooltip.HorseAttributeTooltip;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
@@ -12,13 +15,22 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.MobEffectTextureManager;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
+import java.util.function.DoubleUnaryOperator;
+
 public class ClientHorseAttributeTooltip implements ClientTooltipComponent {
+   private static final DecimalFormat ATTRIBUTE_VALUE_FORMAT = Util.make(new DecimalFormat("#.##"), (p_41704_) -> {
+      p_41704_.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
+   });
+
    private final int textIndent = 4;
    private final int iconSize = 20;
    private final int firstLineHeight = 12;
@@ -27,9 +39,28 @@ public class ClientHorseAttributeTooltip implements ClientTooltipComponent {
    private final MobEffect icon;
 
    public ClientHorseAttributeTooltip(HorseAttributeTooltip tooltip) {
-      this.line1 = tooltip.line1();
-      this.line2 = tooltip.line2();
       this.icon = tooltip.icon();
+      double value = tooltip.value();
+      double min = tooltip.min();
+      double max = tooltip.max();
+      String translationKey = tooltip.translationKey();
+      DoubleUnaryOperator valueConverter = tooltip.valueConverter();
+      // we build all the components in here (vanilla does it in the common toolip component class) since we want the client to be able to control the appearance of the tooltips
+      MutableComponent unitComponent = new TranslatableComponent(translationKey.concat(".unit"), new TextComponent(ATTRIBUTE_VALUE_FORMAT.format(valueConverter.applyAsDouble(value))).withStyle(categorizeValue(value, min, max))).withStyle(ChatFormatting.GRAY);
+      this.line1 = new TranslatableComponent(translationKey, unitComponent).withStyle(ChatFormatting.WHITE).getVisualOrderText();
+      MutableComponent minComponent = new TranslatableComponent("horse.tooltip.min", new TextComponent(ATTRIBUTE_VALUE_FORMAT.format(valueConverter.applyAsDouble(min))).withStyle(ChatFormatting.GRAY)).withStyle(HorseExpert.CONFIG.client().lowValueColor);
+      MutableComponent maxComponent = new TranslatableComponent("horse.tooltip.max", new TextComponent(ATTRIBUTE_VALUE_FORMAT.format(valueConverter.applyAsDouble(max))).withStyle(ChatFormatting.GRAY)).withStyle(HorseExpert.CONFIG.client().highValueColor);
+      MutableComponent separatorComponent = new TextComponent(", ").withStyle(ChatFormatting.GRAY);
+      this.line2 = minComponent.append(separatorComponent).append(maxComponent).getVisualOrderText();
+   }
+
+   private static ChatFormatting categorizeValue(double value, double min, double max) {
+      if (value < min + (max - min) * HorseExpert.CONFIG.client().lowValuePercentage) {
+         return HorseExpert.CONFIG.client().lowValueColor;
+      } else if (value >= min + (max - min) * HorseExpert.CONFIG.client().highValuePercentage) {
+         return HorseExpert.CONFIG.client().highValueColor;
+      }
+      return HorseExpert.CONFIG.client().mediumValueColor;
    }
 
    @Override
