@@ -1,29 +1,25 @@
 package fuzs.horseexpert.world.item;
 
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.DispenserBlock;
-import org.jetbrains.annotations.Nullable;
 
-public class MonocleItem extends Item {
-    public MonocleItem(Properties p_41383_) {
-        super(p_41383_);
-        DispenserBlock.registerBehavior(this, ArmorItem.DISPENSE_ITEM_BEHAVIOR);
+public class MonocleItem extends ArmorItem {
+    public MonocleItem(Properties p_40388_) {
+        super(MonocleArmorMaterial.INSTANCE, EquipmentSlot.HEAD, p_40388_);
     }
 
-    @Nullable
     @Override
-    public EquipmentSlot getEquipmentSlot(ItemStack stack) {
-        return EquipmentSlot.HEAD;
+    public boolean isValidRepairItem(ItemStack p_40392_, ItemStack p_40393_) {
+        return false;
     }
 
-    @Nullable
     @Override
-    public SoundEvent getEquipSound() {
-        return SoundEvents.ARMOR_EQUIP_GOLD;
+    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot p_41388_) {
+        return ImmutableMultimap.of();
     }
 }

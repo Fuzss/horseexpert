@@ -33,6 +33,9 @@ public class ClientHorseAttributeTooltip implements ClientTooltipComponent {
 
    private final int textIndent = 4;
    private final int iconSize = 20;
+   /**
+    * this is needed since we need to always supply an empty text component above this on the tooltip, but we actually want to move up where the empty component would normally be
+    */
    private final int firstLineHeight = 12;
    private final FormattedCharSequence line1;
    private final FormattedCharSequence line2;
