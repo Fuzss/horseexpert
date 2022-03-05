@@ -1,6 +1,6 @@
 package fuzs.horseexpert;
 
-import fuzs.horseexpert.config.ServerConfig;
+import fuzs.horseexpert.config.ClientConfig;
 import fuzs.horseexpert.data.ModLanguageProvider;
 import fuzs.horseexpert.data.ModRecipeProvider;
 import fuzs.horseexpert.registry.ModRegistry;
@@ -24,7 +24,7 @@ public class HorseExpert {
     public static final Logger LOGGER = LogManager.getLogger(HorseExpert.MOD_NAME);
 
     @SuppressWarnings("Convert2MethodRef")
-    public static final ConfigHolder<AbstractConfig, ServerConfig> CONFIG = ConfigHolder.server(() -> new ServerConfig());
+    public static final ConfigHolder<ClientConfig, AbstractConfig> CONFIG = ConfigHolder.client(() -> new ClientConfig());
 
     @SubscribeEvent
     public static void onConstructMod(final FMLConstructModEvent evt) {
