@@ -40,9 +40,11 @@ public class HorseAttributeOverlayHandler {
                 gui.setBlitOffset(-90);
                 Options options = minecraft.options;
                 if (options.getCameraType().isFirstPerson() && minecraft.crosshairPickEntity instanceof AbstractHorse animal) {
-                    if (minecraft.gameMode.getPlayerMode() != GameType.SPECTATOR && minecraft.cameraEntity instanceof Player player && player.getItemBySlot(EquipmentSlot.HEAD).is(ModRegistry.MONOCLE_ITEM.get())) {
-                        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-                        renderHorseAttributeTooltips(screenInstance, mStack, screenWidth, screenHeight, animal);
+                    if (minecraft.gameMode.getPlayerMode() != GameType.SPECTATOR && minecraft.cameraEntity instanceof Player player && player.getItemBySlot(EquipmentSlot.HEAD).is(ModRegistry.MONOCLE_ITEM.get()) && (!HorseExpert.CONFIG.client().requiresSneaking || player.isShiftKeyDown())) {
+                        if (!HorseExpert.CONFIG.client().mustBeTamed || animal.isTamed()) {
+                            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+                            renderHorseAttributeTooltips(screenInstance, mStack, screenWidth, screenHeight, animal);
+                        }
                     }
                 }
             }});
@@ -51,11 +53,12 @@ public class HorseAttributeOverlayHandler {
     private static void renderHorseAttributeTooltips(Screen screenInstance, PoseStack mStack, int screenWidth, int screenHeight, AbstractHorse animal) {
         List<Optional<TooltipComponent>> tooltipComponents = Lists.newArrayList();
         tooltipComponents.add(HorseAttributeTooltip.healthTooltip(animal.getAttributeValue(Attributes.MAX_HEALTH)));
-        if (animal instanceof Llama llama) {
-            tooltipComponents.add(HorseAttributeTooltip.strengthTooltip(llama.getStrength()));
-        } else {
+        if (!(animal instanceof Llama) || HorseExpert.CONFIG.client().allLlamaAttributes) {
             tooltipComponents.add(HorseAttributeTooltip.speedTooltip(animal.getAttributeValue(Attributes.MOVEMENT_SPEED)));
             tooltipComponents.add(HorseAttributeTooltip.jumpHeightTooltip(animal.getAttributeValue(Attributes.JUMP_STRENGTH)));
+        }
+        if (animal instanceof Llama llama) {
+            tooltipComponents.add(HorseAttributeTooltip.strengthTooltip(llama.getStrength()));
         }
         int posX = screenWidth / 2 - 12 + 22 + HorseExpert.CONFIG.client().offsetX;
         int posY = screenHeight / 2 + 15 - (tooltipComponents.size() * 29 - 3) / 2 + HorseExpert.CONFIG.client().offsetY;
