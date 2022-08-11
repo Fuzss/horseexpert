@@ -37,9 +37,7 @@ public class ClientHorseAttributeTooltip implements ClientTooltipComponent {
       this.line2 = tooltip.line2();
       this.item = tooltip.item();
       this.icon = tooltip.icon();
-      if ((this.item != null) == (this.icon != null)) {
-         throw new IllegalArgumentException("Only one value allowed: item or icon");
-      }
+      if ((this.item != null) == (this.icon != null)) throw new IllegalArgumentException("Only one value allowed: item or icon");
    }
 
    @Override

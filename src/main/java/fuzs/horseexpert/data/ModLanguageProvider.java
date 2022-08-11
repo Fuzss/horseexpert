@@ -12,7 +12,7 @@ public class ModLanguageProvider extends LanguageProvider {
     @Override
     protected void addTranslations() {
         this.add(ModRegistry.MONOCLE_ITEM.get(), "Monocle");
-        this.add("item.horseexpert.monocle.tooltip", "Wear this and look at a mount to see its statistics.");
+        this.add("item.horseexpert.monocle.tooltip", "Wear a monocle and look at a mount to see its statistics.");
         this.add("horse.tooltip.min", "Min: %s");
         this.add("horse.tooltip.max", "Max: %s");
         this.add("horse.tooltip.health", "Health: %s");

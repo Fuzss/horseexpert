@@ -7,8 +7,8 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
-public class MonocleArmorMaterial implements ArmorMaterial {
-    public static final ArmorMaterial INSTANCE = new MonocleArmorMaterial();
+public enum MonocleArmorMaterial implements ArmorMaterial {
+    INSTANCE;
 
     @Override
     public int getDurabilityForSlot(EquipmentSlot p_40410_) {
