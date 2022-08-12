@@ -6,7 +6,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import fuzs.horseexpert.HorseExpert;
 import fuzs.horseexpert.client.gui.screens.inventory.tooltip.ClientHorseAttributeTooltip;
 import fuzs.horseexpert.client.handler.HorseAttributeOverlayHandler;
-import fuzs.horseexpert.client.handler.NameplateRenderingHandler;
 import fuzs.horseexpert.client.init.ModClientRegistry;
 import fuzs.horseexpert.client.renderer.ModRenderType;
 import fuzs.horseexpert.registry.ModRegistry;
@@ -28,7 +27,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -43,7 +41,6 @@ public class HorseExpertClient {
     public static void onClientSetup(final FMLClientSetupEvent evt) {
         MinecraftForgeClient.registerTooltipComponentFactory(HorseAttributeTooltip.class, ClientHorseAttributeTooltip::new);
         HorseAttributeOverlayHandler.touch();
-        registerHandlers();
         EntityModelSet entityModels = Minecraft.getInstance().getEntityModels();
         CuriosRendererRegistry.register(ModRegistry.MONOCLE_ITEM.get(), () -> new ICurioRenderer() {
             private static final ResourceLocation MONOCLE_LOCATION = new ResourceLocation(HorseExpert.MOD_ID, "textures/entity/monocle.png");
@@ -72,11 +69,6 @@ public class HorseExpertClient {
                 this.monocleModel.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
             }
         });
-    }
-
-    private static void registerHandlers() {
-        NameplateRenderingHandler nameplateRenderingHandler = new NameplateRenderingHandler();
-        MinecraftForge.EVENT_BUS.addListener(nameplateRenderingHandler::onRenderNameplate);
     }
 
     @SubscribeEvent
