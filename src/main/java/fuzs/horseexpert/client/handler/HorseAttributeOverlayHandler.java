@@ -12,7 +12,6 @@ import net.minecraft.client.Options;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.animal.horse.Llama;
@@ -22,35 +21,38 @@ import net.minecraft.world.level.GameType;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.client.gui.IIngameOverlay;
 import net.minecraftforge.client.gui.OverlayRegistry;
+import top.theillusivec4.curios.api.CuriosApi;
 
 import java.util.List;
 import java.util.Optional;
 
 public class HorseAttributeOverlayHandler {
-    public static final IIngameOverlay HORSE_INFO_ELEMENT;
+//    public static final IIngameOverlay HORSE_INFO_ELEMENT;
+
+    public static final Screen SCREEN_INSTANCE;
 
     static {
-        Screen screenInstance = new Screen(TextComponent.EMPTY) {};
+        SCREEN_INSTANCE = new Screen(TextComponent.EMPTY) {};
         Minecraft minecraft = Minecraft.getInstance();
         // prevent tooltips from being rendered to the left when they would otherwise reach beyond screen border
-        screenInstance.init(minecraft, Integer.MAX_VALUE, Integer.MAX_VALUE);
-        HORSE_INFO_ELEMENT = OverlayRegistry.registerOverlayBelow(ForgeIngameGui.CROSSHAIR_ELEMENT, new ResourceLocation(HorseExpert.MOD_ID, "horse_info").toString(), (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
-            if (!minecraft.options.hideGui) {
-                gui.setupOverlayRenderState(true, false);
-                gui.setBlitOffset(-90);
-                Options options = minecraft.options;
-                if (options.getCameraType().isFirstPerson() && minecraft.crosshairPickEntity instanceof AbstractHorse animal) {
-                    if (minecraft.gameMode.getPlayerMode() != GameType.SPECTATOR && minecraft.cameraEntity instanceof Player player && player.getItemBySlot(EquipmentSlot.HEAD).is(ModRegistry.MONOCLE_ITEM.get()) && (!HorseExpert.CONFIG.client().requiresSneaking || player.isShiftKeyDown())) {
-                        if (!HorseExpert.CONFIG.client().mustBeTamed || animal.isTamed()) {
-                            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-                            renderHorseAttributeTooltips(screenInstance, mStack, screenWidth, screenHeight, animal);
-                        }
-                    }
-                }
-            }});
+        SCREEN_INSTANCE.init(minecraft, Integer.MAX_VALUE, Integer.MAX_VALUE);
+//        HORSE_INFO_ELEMENT = OverlayRegistry.registerOverlayBelow(ForgeIngameGui.CROSSHAIR_ELEMENT, new ResourceLocation(HorseExpert.MOD_ID, "horse_info").toString(), (gui, mStack, partialTicks, screenWidth, screenHeight) -> {
+//            if (!minecraft.options.hideGui) {
+//                gui.setupOverlayRenderState(true, false);
+//                gui.setBlitOffset(-90);
+//                Options options = minecraft.options;
+//                if (options.getCameraType().isFirstPerson() && minecraft.crosshairPickEntity instanceof AbstractHorse animal) {
+//                    if (minecraft.gameMode.getPlayerMode() != GameType.SPECTATOR && minecraft.cameraEntity instanceof Player player && CuriosApi.getCuriosHelper().findFirstCurio(player, ModRegistry.MONOCLE_ITEM.get()).isPresent() && (!HorseExpert.CONFIG.client().requiresSneaking || player.isShiftKeyDown())) {
+//                        if (!HorseExpert.CONFIG.client().mustBeTamed || animal.isTamed()) {
+//                            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+//                            renderHorseAttributeTooltips(SCREEN_INSTANCE, mStack, screenWidth, screenHeight, animal);
+//                        }
+//                    }
+//                }
+//            }});
     }
 
-    private static void renderHorseAttributeTooltips(Screen screenInstance, PoseStack mStack, int screenWidth, int screenHeight, AbstractHorse animal) {
+    public static void renderHorseAttributeTooltips(Screen screenInstance, PoseStack mStack, int screenWidth, int screenHeight, AbstractHorse animal) {
         List<Optional<TooltipComponent>> tooltipComponents = Lists.newArrayList();
         tooltipComponents.add(HorseAttributeTooltip.healthTooltip(animal.getAttributeValue(Attributes.MAX_HEALTH)));
         if (!(animal instanceof Llama) || HorseExpert.CONFIG.client().allLlamaAttributes) {

@@ -68,6 +68,9 @@ minecraft {
 repositories {
     mavenLocal()
     maven { url = "https://cursemaven.com" }
+    maven {
+        url = "https://maven.theillusivec4.top/"
+    }
 }
 
 dependencies {
@@ -78,6 +81,10 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:catalogue-459701:3543625")
     runtimeOnly fg.deobf("curse.maven:bettermodsbutton-541584:3548185")
     runtimeOnly fg.deobf("curse.maven:configmenusforge-544048:3548199")
+
+    // Curios Api
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18.2-5.0.7.1")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18.2-5.0.7.1:api")
 
     // from local maven, those builds are not obfuscated
     implementation "fuzs.puzzleslib:PuzzlesLib:${puzzlesVersion}"
@@ -229,7 +236,10 @@ curseforge {
         project.findProperty('curseProjectVersion').replaceAll(" ", "").split(",").each { version -> addGameVersion version }
         mainArtifact jar
         addArtifact sourceJar
-        relations { requiredDependency 'puzzles-lib' }
+        relations {
+            requiredDependency 'puzzles-lib'
+            requiredDependency 'curios'
+        }
     }
     options {
         // doesn't upload, only prints json to console

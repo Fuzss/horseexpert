@@ -10,6 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -17,9 +18,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class MonocleItem extends ArmorItem {
+public class MonocleItem extends Item {
+
     public MonocleItem(Properties p_40388_) {
-        super(MonocleArmorMaterial.INSTANCE, EquipmentSlot.HEAD, p_40388_);
+        super(p_40388_);
     }
 
     @Override
@@ -27,20 +29,20 @@ public class MonocleItem extends ArmorItem {
         p_41423_.add(new TranslatableComponent("item.horseexpert.monocle.tooltip").withStyle(ChatFormatting.GRAY));
     }
 
-    @Override
-    public int getEnchantmentValue() {
-        return 0;
-    }
+//    @Override
+//    public int getEnchantmentValue() {
+//        return 0;
+//    }
 
-    @Override
-    public boolean isValidRepairItem(ItemStack p_40392_, ItemStack p_40393_) {
-        return false;
-    }
-
-    @Override
-    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot p_41388_) {
-        return ImmutableMultimap.of();
-    }
+//    @Override
+//    public boolean isValidRepairItem(ItemStack p_40392_, ItemStack p_40393_) {
+//        return false;
+//    }
+//
+//    @Override
+//    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot p_41388_) {
+//        return ImmutableMultimap.of();
+//    }
 
     @Override
     public boolean makesPiglinsNeutral(ItemStack stack, LivingEntity wearer) {
