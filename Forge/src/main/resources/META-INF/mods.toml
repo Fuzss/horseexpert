@@ -1,0 +1,48 @@
+modLoader="javafml"
+loaderVersion="[${minFMLVersion},)"
+license="MPL-2"
+issueTrackerURL="${modIssueUrl}"
+
+[[mods]]
+    modId="${modId}"
+    displayName="${modName}"
+    description="${modDescription}"
+    version="${modVersion}"
+    authors="${modAuthor}"
+    logoFile="mod_banner.png"
+    logoBlur=false
+    displayURL="${modPageUrl}"
+    updateJSONURL="${modUpdateUrl}"
+    displayTest="${modForgeDisplayTest}"
+
+[[dependencies.${modId}]]
+    modId="forge"
+    mandatory=true
+    versionRange="[${minForgeVersion},)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${modId}]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[${minMinecraftVersion},${nextMinecraftVersion})"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${modId}]]
+    modId="puzzleslib"
+    mandatory=true
+    versionRange="[${minPuzzlesVersion},)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${modId}]]
+    modId="curios"
+    mandatory=true
+    versionRange="[1.19.1-5.1.0.5,)"
+    ordering="NONE"
+    side="BOTH"
+
+[modproperties.${modId}]
+    catalogueImageIcon="mod_logo.png"
+    configuredBackground="minecraft:textures/block/coarse_dirt.png"

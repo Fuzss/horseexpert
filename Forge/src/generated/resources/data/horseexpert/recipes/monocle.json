@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "item": "minecraft:gold_nugget"
+    },
+    "P": {
+      "tag": "forge:glass_panes"
+    }
+  },
+  "pattern": [
+    " G ",
+    "GPG",
+    " G "
+  ],
+  "result": {
+    "item": "horseexpert:monocle"
+  }
+}
