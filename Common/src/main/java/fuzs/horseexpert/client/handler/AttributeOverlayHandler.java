@@ -27,15 +27,16 @@ public class AttributeOverlayHandler {
     private static final Screen SCREEN;
 
     static {
+        // a dummy screen instance we need  for access to the tooltip rendering method
         SCREEN = new Screen(Component.empty()) {};
         // prevent tooltips from being rendered to the left when they would otherwise reach beyond screen border
         SCREEN.init(Minecraft.getInstance(), Integer.MAX_VALUE, Integer.MAX_VALUE);
     }
 
-    public static void renderAttributeOverlay(Minecraft minecraft, PoseStack poseStack, int width, int height) {
+    public static void renderAttributeOverlay(Minecraft minecraft, PoseStack poseStack, int screenWidth, int screenHeight) {
         isRenderingTooltipsAllowed(minecraft).ifPresent(abstractHorse -> {
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            actuallyRenderAttributeOverlay(poseStack, width, height, abstractHorse);
+            actuallyRenderAttributeOverlay(poseStack, screenWidth, screenHeight, abstractHorse);
         });
     }
 
