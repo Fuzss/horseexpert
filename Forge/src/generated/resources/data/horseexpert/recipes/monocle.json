@@ -1,16 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
+    "#": {
+      "item": "minecraft:glass_pane"
+    },
     "G": {
       "item": "minecraft:gold_nugget"
-    },
-    "P": {
-      "tag": "forge:glass_panes"
     }
   },
   "pattern": [
     " G ",
-    "GPG",
+    "G#G",
     " G "
   ],
   "result": {
