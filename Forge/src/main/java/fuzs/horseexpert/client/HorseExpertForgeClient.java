@@ -3,10 +3,10 @@ package fuzs.horseexpert.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.horseexpert.HorseExpert;
 import fuzs.horseexpert.client.handler.AttributeOverlayHandler;
-import fuzs.horseexpert.client.renderer.ForgeRenderType;
+import fuzs.horseexpert.client.renderer.ModRenderType;
 import fuzs.horseexpert.client.renderer.entity.layers.MonocleRenderer;
 import fuzs.horseexpert.init.ModRegistry;
-import fuzs.puzzleslib.client.core.ClientCoreServices;
+import fuzs.puzzleslib.api.client.core.v1.ClientModConstructor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -31,7 +31,7 @@ public class HorseExpertForgeClient {
 
     @SubscribeEvent
     public static void onConstructMod(final FMLConstructModEvent evt) {
-        ClientCoreServices.FACTORIES.clientModConstructor(HorseExpert.MOD_ID).accept(new HorseExpertClient());
+        ClientModConstructor.construct(HorseExpert.MOD_ID, HorseExpertClient::new);
     }
 
     @SubscribeEvent
@@ -41,7 +41,7 @@ public class HorseExpertForgeClient {
 
             @Override
             public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-                MonocleRenderer.get().render(stack, matrixStack, renderLayerParent.getModel(), renderTypeBuffer, light, ForgeRenderType::armorCutoutTranslucentNoCull);
+                MonocleRenderer.get().render(stack, matrixStack, renderLayerParent.getModel(), renderTypeBuffer, light, ModRenderType::armorCutoutTranslucentNoCull);
             }
         });
     }

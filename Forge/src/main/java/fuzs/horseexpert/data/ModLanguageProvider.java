@@ -1,13 +1,15 @@
 package fuzs.horseexpert.data;
 
 import fuzs.horseexpert.init.ModRegistry;
+import fuzs.puzzleslib.api.data.v1.AbstractLanguageProvider;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
 
-public class ModLanguageProvider extends LanguageProvider {
+public class ModLanguageProvider extends AbstractLanguageProvider {
 
-    public ModLanguageProvider(DataGenerator gen, String modId) {
-        super(gen, modId, "en_us");
+    public ModLanguageProvider(PackOutput packOutput, String modId) {
+        super(packOutput, modId);
     }
 
     @Override

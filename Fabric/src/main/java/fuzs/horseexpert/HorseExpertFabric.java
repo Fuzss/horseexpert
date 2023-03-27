@@ -1,14 +1,14 @@
 package fuzs.horseexpert;
 
 import fuzs.horseexpert.init.FabricModRegistry;
-import fuzs.puzzleslib.core.CoreServices;
+import fuzs.puzzleslib.api.core.v1.ModConstructor;
 import net.fabricmc.api.ModInitializer;
 
 public class HorseExpertFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        CoreServices.FACTORIES.modConstructor(HorseExpert.MOD_ID).accept(new HorseExpert());
+        ModConstructor.construct(HorseExpert.MOD_ID, HorseExpert::new);
         FabricModRegistry.touch();
     }
 }

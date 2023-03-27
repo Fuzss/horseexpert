@@ -6,7 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.horseexpert.HorseExpert;
 import fuzs.horseexpert.config.ClientConfig;
-import fuzs.horseexpert.core.ModServices;
+import fuzs.horseexpert.core.CommonAbstractions;
 import fuzs.horseexpert.init.ModRegistry;
 import fuzs.horseexpert.world.inventory.tooltip.HorseAttributeTooltip;
 import net.minecraft.client.Minecraft;
@@ -44,7 +44,7 @@ public class AttributeOverlayHandler {
         if (!minecraft.options.hideGui) {
             Options options = minecraft.options;
             if (options.getCameraType().isFirstPerson() && minecraft.crosshairPickEntity instanceof AbstractHorse animal) {
-                if (minecraft.gameMode.getPlayerMode() != GameType.SPECTATOR && minecraft.cameraEntity instanceof Player player && ModServices.ABSTRACTIONS.findEquippedItem(player, ModRegistry.MONOCLE_ITEM.get()).isPresent() && (!HorseExpert.CONFIG.get(ClientConfig.class).requiresSneaking || player.isShiftKeyDown())) {
+                if (minecraft.gameMode.getPlayerMode() != GameType.SPECTATOR && minecraft.cameraEntity instanceof Player player && CommonAbstractions.INSTANCE.findEquippedItem(player, ModRegistry.MONOCLE_ITEM.get()).isPresent() && (!HorseExpert.CONFIG.get(ClientConfig.class).requiresSneaking || player.isShiftKeyDown())) {
                     if (!HorseExpert.CONFIG.get(ClientConfig.class).mustBeTamed || animal.isTamed()) {
                         return Optional.of(animal);
                     }

@@ -2,7 +2,6 @@ package fuzs.horseexpert.client.gui.screens.inventory.tooltip;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
 import fuzs.horseexpert.world.inventory.tooltip.HorseAttributeTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -17,6 +16,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
 
 public class ClientHorseAttributeTooltip implements ClientTooltipComponent {
    private final int textIndent = 4;
@@ -75,7 +75,7 @@ public class ClientHorseAttributeTooltip implements ClientTooltipComponent {
       if (this.icon != null) {
          MobEffectTextureManager mobeffecttexturemanager = Minecraft.getInstance().getMobEffectTextures();
          TextureAtlasSprite textureatlassprite = mobeffecttexturemanager.get(this.icon);
-         RenderSystem.setShaderTexture(0, textureatlassprite.atlas().location());
+         RenderSystem.setShaderTexture(0, textureatlassprite.atlasLocation());
          GuiComponent.blit(poseStack, posX + 1, posY + 1 - this.firstLineHeight, blitOffset, 18, 18, textureatlassprite);
       }
    }

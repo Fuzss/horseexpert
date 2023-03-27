@@ -1,6 +1,6 @@
 modLoader="javafml"
 loaderVersion="[${minFMLVersion},)"
-license="MPL-2"
+license="MPL-2.0"
 issueTrackerURL="${modIssueUrl}"
 
 [[mods]]
@@ -25,7 +25,7 @@ issueTrackerURL="${modIssueUrl}"
 [[dependencies.${modId}]]
     modId="minecraft"
     mandatory=true
-    versionRange="[${minMinecraftVersion},${nextMinecraftVersion})"
+    versionRange="[${minecraftVersion}]"
     ordering="NONE"
     side="BOTH"
 
@@ -39,10 +39,9 @@ issueTrackerURL="${modIssueUrl}"
 [[dependencies.${modId}]]
     modId="curios"
     mandatory=true
-    versionRange="[1.19.1-5.1.0.5,)"
+    versionRange="*"
     ordering="NONE"
     side="BOTH"
 
 [modproperties.${modId}]
     catalogueImageIcon="mod_logo.png"
-    configuredBackground="minecraft:textures/block/coarse_dirt.png"

@@ -1,15 +1,14 @@
 package fuzs.horseexpert.init;
 
 import fuzs.horseexpert.HorseExpert;
-import fuzs.puzzleslib.core.CoreServices;
-import fuzs.puzzleslib.init.RegistryManager;
-import fuzs.puzzleslib.init.RegistryReference;
-import net.minecraft.core.Registry;
+import fuzs.puzzleslib.api.init.v2.RegistryManager;
+import fuzs.puzzleslib.api.init.v2.RegistryReference;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 
 public class ModRegistry {
-    private static final RegistryManager REGISTRY = CoreServices.FACTORIES.registration(HorseExpert.MOD_ID);
-    public static final RegistryReference<Item> MONOCLE_ITEM = REGISTRY.placeholder(Registry.ITEM_REGISTRY, "monocle");
+    static final RegistryManager REGISTRY = RegistryManager.instant(HorseExpert.MOD_ID);
+    public static final RegistryReference<Item> MONOCLE_ITEM = REGISTRY.placeholder(Registries.ITEM, "monocle");
 
     public static void touch() {
 
