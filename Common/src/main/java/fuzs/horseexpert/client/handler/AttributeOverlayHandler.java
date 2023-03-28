@@ -5,38 +5,31 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.horseexpert.HorseExpert;
+import fuzs.horseexpert.client.gui.screens.inventory.tooltip.ClientHorseAttributeTooltip;
 import fuzs.horseexpert.config.ClientConfig;
 import fuzs.horseexpert.core.CommonAbstractions;
 import fuzs.horseexpert.init.ModRegistry;
 import fuzs.horseexpert.world.inventory.tooltip.HorseAttributeTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.animal.horse.Llama;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.level.GameType;
 
 import java.util.List;
 import java.util.Optional;
 
 public class AttributeOverlayHandler {
-    private static final Screen SCREEN;
-
-    static {
-        // a dummy screen instance we need  for access to the tooltip rendering method
-        SCREEN = new Screen(Component.empty()) {};
-        // prevent tooltips from being rendered to the left when they would otherwise reach beyond screen border
-        SCREEN.init(Minecraft.getInstance(), Integer.MAX_VALUE, Integer.MAX_VALUE);
-    }
 
     public static void renderAttributeOverlay(Minecraft minecraft, PoseStack poseStack, int screenWidth, int screenHeight) {
         isRenderingTooltipsAllowed(minecraft).ifPresent(abstractHorse -> {
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            actuallyRenderAttributeOverlay(poseStack, screenWidth, screenHeight, abstractHorse);
+            actuallyRenderAttributeOverlay(poseStack, screenWidth, screenHeight, abstractHorse, minecraft.font, minecraft.getItemRenderer());
         });
     }
 
@@ -54,17 +47,17 @@ public class AttributeOverlayHandler {
         return Optional.empty();
     }
 
-    private static void actuallyRenderAttributeOverlay(PoseStack poseStack, int screenWidth, int screenHeight, AbstractHorse animal) {
-        List<Optional<TooltipComponent>> tooltipComponents = buildTooltipComponents(animal);
+    private static void actuallyRenderAttributeOverlay(PoseStack poseStack, int screenWidth, int screenHeight, AbstractHorse animal, Font font, ItemRenderer itemRenderer) {
+        List<HorseAttributeTooltip> tooltipComponents = buildTooltipComponents(animal);
         int posX = screenWidth / 2 - 12 + 22 + HorseExpert.CONFIG.get(ClientConfig.class).offsetX;
         int posY = screenHeight / 2 + 15 - (tooltipComponents.size() * 29 - 3) / 2 + HorseExpert.CONFIG.get(ClientConfig.class).offsetY;
         for (int i = 0; i < tooltipComponents.size(); i++) {
-            SCREEN.renderTooltip(poseStack, Lists.newArrayList(Component.empty()), tooltipComponents.get(i), posX, posY + 29 * i);
+            TooltipRenderHelper.renderTooltip(poseStack, posX, posY + 29 * i, Component.empty(), new ClientHorseAttributeTooltip(tooltipComponents.get(i)));
         }
     }
 
-    private static List<Optional<TooltipComponent>> buildTooltipComponents(AbstractHorse animal) {
-        List<Optional<TooltipComponent>> tooltipComponents = Lists.newArrayList();
+    private static List<HorseAttributeTooltip> buildTooltipComponents(AbstractHorse animal) {
+        List<HorseAttributeTooltip> tooltipComponents = Lists.newArrayList();
         tooltipComponents.add(HorseAttributeTooltip.healthTooltip(animal.getAttributeValue(Attributes.MAX_HEALTH)));
         if (!(animal instanceof Llama) || HorseExpert.CONFIG.get(ClientConfig.class).allLlamaAttributes) {
             tooltipComponents.add(HorseAttributeTooltip.speedTooltip(animal.getAttributeValue(Attributes.MOVEMENT_SPEED)));

@@ -40,9 +40,5 @@
     "trinkets": "*",
     "minecraft": "${minecraftVersion}",
     "java": ">=17"
-  },
-
-  "breaks": {
-    "tooltipfix": "*"
   }
 }

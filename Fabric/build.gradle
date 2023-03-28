@@ -219,6 +219,7 @@ curseforge {
                 requiredDependency 'fabric-api'
                 requiredDependency 'forge-config-api-port-fabric'
                 requiredDependency 'puzzles-lib'
+                requiredDependency 'trinkets'
             }
         }
 //        addArtifact sourcesJar
@@ -248,6 +249,7 @@ modrinth {
         required.project 'fabric-api'
         required.project 'forge-config-api-port'
         required.project 'puzzles-lib'
+        required.project 'trinkets'
     }
 //	debugMode = true
 }

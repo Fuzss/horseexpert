@@ -17,7 +17,6 @@ import org.jetbrains.annotations.Nullable;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.function.DoubleUnaryOperator;
 
 public class HorseAttributeTooltip implements TooltipComponent {
@@ -80,20 +79,20 @@ public class HorseAttributeTooltip implements TooltipComponent {
         return HorseExpert.CONFIG.get(ClientConfig.class).mediumValueColor;
     }
 
-    public static Optional<TooltipComponent> healthTooltip(double value) {
+    public static HorseAttributeTooltip healthTooltip(double value) {
         // half health values as our translation string says hearts
-        return Optional.of(new HorseAttributeTooltip(MobEffects.HEALTH_BOOST, value / 2.0, 7.5, 15.0, "horse.tooltip.health"));
+        return new HorseAttributeTooltip(MobEffects.HEALTH_BOOST, value / 2.0, 7.5, 15.0, "horse.tooltip.health");
     }
 
-    public static Optional<TooltipComponent> speedTooltip(double value) {
-        return Optional.of(new HorseAttributeTooltip(MobEffects.MOVEMENT_SPEED, value, 0.1125, 0.3375, "horse.tooltip.speed", d -> d * 43.17));
+    public static HorseAttributeTooltip speedTooltip(double value) {
+        return new HorseAttributeTooltip(MobEffects.MOVEMENT_SPEED, value, 0.1125, 0.3375, "horse.tooltip.speed", d -> d * 43.17);
     }
 
-    public static Optional<TooltipComponent> jumpHeightTooltip(double value) {
-        return Optional.of(new HorseAttributeTooltip(MobEffects.JUMP, value, 0.4, 1.0, "horse.tooltip.jump_height", d -> Math.pow(d, 1.7) * 5.293));
+    public static HorseAttributeTooltip jumpHeightTooltip(double value) {
+        return new HorseAttributeTooltip(MobEffects.JUMP, value, 0.4, 1.0, "horse.tooltip.jump_height", d -> Math.pow(d, 1.7) * 5.293);
     }
 
-    public static Optional<TooltipComponent> strengthTooltip(double value) {
-        return Optional.of(new HorseAttributeTooltip(Items.CHEST, value, 1.0, 5.0, "horse.tooltip.strength", d -> d * 3));
+    public static HorseAttributeTooltip strengthTooltip(double value) {
+        return new HorseAttributeTooltip(Items.CHEST, value, 1.0, 5.0, "horse.tooltip.strength", d -> d * 3);
     }
 }
