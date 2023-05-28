@@ -5,11 +5,11 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.horseexpert.HorseExpert;
-import fuzs.horseexpert.client.gui.screens.inventory.tooltip.ClientHorseAttributeTooltip;
 import fuzs.horseexpert.config.ClientConfig;
 import fuzs.horseexpert.core.CommonAbstractions;
 import fuzs.horseexpert.init.ModRegistry;
 import fuzs.horseexpert.world.inventory.tooltip.HorseAttributeTooltip;
+import fuzs.puzzleslib.api.client.screen.v2.TooltipRenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.Font;
@@ -26,9 +26,12 @@ import java.util.Optional;
 
 public class AttributeOverlayHandler {
 
-    public static void renderAttributeOverlay(Minecraft minecraft, PoseStack poseStack, int screenWidth, int screenHeight) {
+    public static void renderAttributeOverlay(Minecraft minecraft, PoseStack poseStack, float tickDelta, int screenWidth, int screenHeight) {
         isRenderingTooltipsAllowed(minecraft).ifPresent(abstractHorse -> {
+            RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            RenderSystem.disableDepthTest();
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             actuallyRenderAttributeOverlay(poseStack, screenWidth, screenHeight, abstractHorse, minecraft.font, minecraft.getItemRenderer());
         });
     }
@@ -52,7 +55,7 @@ public class AttributeOverlayHandler {
         int posX = screenWidth / 2 - 12 + 22 + HorseExpert.CONFIG.get(ClientConfig.class).offsetX;
         int posY = screenHeight / 2 + 15 - (tooltipComponents.size() * 29 - 3) / 2 + HorseExpert.CONFIG.get(ClientConfig.class).offsetY;
         for (int i = 0; i < tooltipComponents.size(); i++) {
-            TooltipRenderHelper.renderTooltip(poseStack, posX, posY + 29 * i, Component.empty(), new ClientHorseAttributeTooltip(tooltipComponents.get(i)));
+            TooltipRenderHelper.renderTooltip(poseStack, posX, posY + 29 * i, Component.empty(), tooltipComponents.get(i));
         }
     }
 

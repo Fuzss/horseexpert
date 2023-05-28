@@ -51,7 +51,7 @@ public class ClientHorseAttributeTooltip implements ClientTooltipComponent {
    }
 
    @Override
-   public void renderText(Font font, int posX, int posY, Matrix4f p_169946_, MultiBufferSource.BufferSource p_169947_) {
+   public void renderText(Font font, int posX, int posY, Matrix4f matrix4f, MultiBufferSource.BufferSource multiBufferSource) {
       int width1 = font.width(this.line1);
       int width2 = font.width(this.line2);
       int startX1, startX2;
@@ -61,22 +61,20 @@ public class ClientHorseAttributeTooltip implements ClientTooltipComponent {
       } else {
          startX2 += (width1 - width2) / 2;
       }
-      font.drawInBatch(this.line1, posX + this.iconSize + startX1, posY - this.firstLineHeight, -1, true, p_169946_, p_169947_, false, 0, 15728880);
-      font.drawInBatch(this.line2, posX + this.iconSize + startX2, posY + 10 - this.firstLineHeight, -1, true, p_169946_, p_169947_, false, 0, 15728880);
+      font.drawInBatch(this.line1, posX + this.iconSize + startX1, posY - this.firstLineHeight, -1, true, matrix4f, multiBufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+      font.drawInBatch(this.line2, posX + this.iconSize + startX2, posY + 10 - this.firstLineHeight, -1, true, matrix4f, multiBufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
    }
 
    @Override
-   public void renderImage(Font p_194048_, int posX, int posY, PoseStack poseStack, ItemRenderer itemRenderer, int blitOffset) {
+   public void renderImage(Font font, int posX, int posY, PoseStack poseStack, ItemRenderer itemRenderer) {
       if (this.item != null) {
-         itemRenderer.blitOffset = blitOffset;
-         itemRenderer.renderAndDecorateItem(new ItemStack(this.item), posX + 2, posY + 1 - this.firstLineHeight);
-         itemRenderer.blitOffset = 0.0F;
+         itemRenderer.renderAndDecorateItem(poseStack, new ItemStack(this.item), posX + 2, posY + 1 - this.firstLineHeight);
       }
       if (this.icon != null) {
          MobEffectTextureManager mobeffecttexturemanager = Minecraft.getInstance().getMobEffectTextures();
          TextureAtlasSprite textureatlassprite = mobeffecttexturemanager.get(this.icon);
          RenderSystem.setShaderTexture(0, textureatlassprite.atlasLocation());
-         GuiComponent.blit(poseStack, posX + 1, posY + 1 - this.firstLineHeight, blitOffset, 18, 18, textureatlassprite);
+         GuiComponent.blit(poseStack, posX + 1, posY + 1 - this.firstLineHeight, 0, 18, 18, textureatlassprite);
       }
    }
 }

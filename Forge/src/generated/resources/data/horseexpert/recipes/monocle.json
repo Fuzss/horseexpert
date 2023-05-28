@@ -16,5 +16,6 @@
   ],
   "result": {
     "item": "horseexpert:monocle"
-  }
+  },
+  "show_notification": true
 }

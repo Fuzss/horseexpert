@@ -1,14 +1,16 @@
 package fuzs.horseexpert.client;
 
 import fuzs.horseexpert.client.gui.screens.inventory.tooltip.ClientHorseAttributeTooltip;
+import fuzs.horseexpert.client.handler.AttributeOverlayHandler;
 import fuzs.horseexpert.client.renderer.entity.layers.MonocleRenderer;
 import fuzs.horseexpert.init.ModRegistry;
 import fuzs.horseexpert.world.inventory.tooltip.HorseAttributeTooltip;
 import fuzs.puzzleslib.api.client.core.v1.ClientModConstructor;
 import fuzs.puzzleslib.api.client.core.v1.context.BuildCreativeModeTabContentsContext;
-import fuzs.puzzleslib.api.client.core.v1.context.ClientReloadListenersContext;
 import fuzs.puzzleslib.api.client.core.v1.context.ClientTooltipComponentsContext;
 import fuzs.puzzleslib.api.client.core.v1.context.LayerDefinitionsContext;
+import fuzs.puzzleslib.api.client.event.v1.RenderGuiCallback;
+import fuzs.puzzleslib.api.core.v1.context.AddReloadListenersContext;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -25,6 +27,15 @@ import java.util.concurrent.Executor;
 public class HorseExpertClient implements ClientModConstructor {
 
     @Override
+    public void onConstructMod() {
+        registerHandlers();
+    }
+
+    private static void registerHandlers() {
+        RenderGuiCallback.EVENT.register(AttributeOverlayHandler::renderAttributeOverlay);
+    }
+
+    @Override
     public void onRegisterClientTooltipComponents(ClientTooltipComponentsContext context) {
         context.registerClientTooltipComponent(HorseAttributeTooltip.class, ClientHorseAttributeTooltip::new);
     }
@@ -35,7 +46,7 @@ public class HorseExpertClient implements ClientModConstructor {
     }
 
     @Override
-    public void onRegisterClientReloadListeners(ClientReloadListenersContext context) {
+    public void onRegisterResourcePackReloadListeners(AddReloadListenersContext context) {
         context.registerReloadListener("monocle_model", (PreparableReloadListener.PreparationBarrier preparationBarrier, ResourceManager resourceManager, ProfilerFiller profilerFiller, ProfilerFiller profilerFiller2, Executor executor, Executor executor2) -> {
             return preparationBarrier.wait(Unit.INSTANCE).thenRunAsync(() -> {
                 EntityModelSet entityModels = Minecraft.getInstance().getEntityModels();
@@ -46,7 +57,7 @@ public class HorseExpertClient implements ClientModConstructor {
 
     @Override
     public void onBuildCreativeModeTabContents(BuildCreativeModeTabContentsContext context) {
-        context.registerBuildListener(CreativeModeTabs.TOOLS_AND_UTILITIES, (featureFlagSet, output, bl) -> {
+        context.registerBuildListener(CreativeModeTabs.TOOLS_AND_UTILITIES, (itemDisplayParameters, output) -> {
             output.accept(ModRegistry.MONOCLE_ITEM.get());
         });
     }
