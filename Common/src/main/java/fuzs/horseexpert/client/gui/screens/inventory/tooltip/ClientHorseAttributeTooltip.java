@@ -1,80 +1,66 @@
 package fuzs.horseexpert.client.gui.screens.inventory.tooltip;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import fuzs.horseexpert.world.inventory.tooltip.HorseAttributeTooltip;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.MobEffectTextureManager;
-import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 
-public class ClientHorseAttributeTooltip implements ClientTooltipComponent {
-   private final int textIndent = 4;
-   private final int iconSize = 20;
-   /**
-    * this is needed since we need to always supply an empty text component above this on the tooltip, but we actually want to move up where the empty component would normally be
-    */
-   private final int firstLineHeight = 12;
-   private final FormattedCharSequence line1;
-   private final FormattedCharSequence line2;
-   @Nullable
-   private final Item item;
-   @Nullable
-   private final MobEffect icon;
+public record ClientHorseAttributeTooltip(@Nullable Item item, @Nullable MobEffect icon, Component line1, @Nullable Component line2) implements ClientTooltipComponent {
+   private static final int TEXT_INDENT = 4;
+   private static final int ICON_SIZE = 20;
+   // this is needed since we need to always supply an empty text component above this on the tooltip, but we actually want to move up where the empty component would normally be
+   private static final int FIRST_LINE_HEIGHT = 12;
 
    public ClientHorseAttributeTooltip(HorseAttributeTooltip tooltip) {
-      this.line1 = tooltip.line1();
-      this.line2 = tooltip.line2();
-      this.item = tooltip.item();
-      this.icon = tooltip.icon();
-      if ((this.item != null) == (this.icon != null)) throw new IllegalArgumentException("Only one value allowed: item or icon");
+      this(tooltip.item(), tooltip.icon(), tooltip.line1(), tooltip.line2());
    }
 
    @Override
-   public int getWidth(Font p_169941_) {
-      return Math.max(p_169941_.width(this.line1), p_169941_.width(this.line2)) + this.textIndent * 2 + this.iconSize;
+   public int getWidth(Font font) {
+      return Math.max(font.width(this.line1), (this.line2 != null ? font.width(this.line2) : 0)) + TEXT_INDENT * 2 + ICON_SIZE;
    }
 
    @Override
    public int getHeight() {
-      return this.iconSize - this.firstLineHeight;
+      return ICON_SIZE - FIRST_LINE_HEIGHT;
    }
 
    @Override
    public void renderText(Font font, int posX, int posY, Matrix4f matrix4f, MultiBufferSource.BufferSource multiBufferSource) {
       int width1 = font.width(this.line1);
-      int width2 = font.width(this.line2);
+      int width2 = this.line2 != null ? font.width(this.line2) : 0;
       int startX1, startX2;
-      startX1 = startX2 = this.textIndent;
+      startX1 = startX2 = TEXT_INDENT;
       if (width2 > width1) {
          startX1 += (width2 - width1) / 2;
       } else {
          startX2 += (width1 - width2) / 2;
       }
-      font.drawInBatch(this.line1, posX + this.iconSize + startX1, posY - this.firstLineHeight, -1, true, matrix4f, multiBufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
-      font.drawInBatch(this.line2, posX + this.iconSize + startX2, posY + 10 - this.firstLineHeight, -1, true, matrix4f, multiBufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+      if (this.line2 == null) posY += 5;
+      font.drawInBatch(this.line1, posX + ICON_SIZE + startX1, posY - FIRST_LINE_HEIGHT, -1, true, matrix4f, multiBufferSource, Font.DisplayMode.NORMAL, 0, 0xF000F0);
+      if (this.line2 != null) {
+         font.drawInBatch(this.line2, posX + ICON_SIZE + startX2, posY + 10 - FIRST_LINE_HEIGHT, -1, true, matrix4f, multiBufferSource, Font.DisplayMode.NORMAL, 0, 0xF000F0);
+      }
    }
 
    @Override
-   public void renderImage(Font font, int posX, int posY, PoseStack poseStack, ItemRenderer itemRenderer) {
+   public void renderImage(Font font, int posX, int posY, GuiGraphics guiGraphics) {
       if (this.item != null) {
-         itemRenderer.renderAndDecorateItem(poseStack, new ItemStack(this.item), posX + 2, posY + 1 - this.firstLineHeight);
+         guiGraphics.renderItem(new ItemStack(this.item), posX + 2, posY + 1 - FIRST_LINE_HEIGHT);
       }
       if (this.icon != null) {
-         MobEffectTextureManager mobeffecttexturemanager = Minecraft.getInstance().getMobEffectTextures();
-         TextureAtlasSprite textureatlassprite = mobeffecttexturemanager.get(this.icon);
-         RenderSystem.setShaderTexture(0, textureatlassprite.atlasLocation());
-         GuiComponent.blit(poseStack, posX + 1, posY + 1 - this.firstLineHeight, 0, 18, 18, textureatlassprite);
+         Minecraft minecraft = Minecraft.getInstance();
+         TextureAtlasSprite atlasSprite = minecraft.getMobEffectTextures().get(this.icon);
+         guiGraphics.blit(posX + 1, posY - FIRST_LINE_HEIGHT, 0, 18, 18, atlasSprite);
       }
    }
 }

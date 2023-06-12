@@ -6,7 +6,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -19,15 +18,10 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import java.util.function.DoubleUnaryOperator;
 
-public class HorseAttributeTooltip implements TooltipComponent {
+public record HorseAttributeTooltip(@Nullable Item item, @Nullable MobEffect icon, Component line1, @Nullable Component line2) implements TooltipComponent {
     private static final DecimalFormat ATTRIBUTE_VALUE_FORMAT = Util.make(new DecimalFormat("#.##"), (p_41704_) -> {
         p_41704_.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT));
     });
-
-    private final Item item;
-    private final MobEffect icon;
-    private final FormattedCharSequence line1;
-    private final FormattedCharSequence line2;
 
     private HorseAttributeTooltip(MobEffect icon, double value, double min, double max, String translationKey) {
         this(null, icon, value, min, max, translationKey, DoubleUnaryOperator.identity());
@@ -42,32 +36,37 @@ public class HorseAttributeTooltip implements TooltipComponent {
     }
 
     private HorseAttributeTooltip(@Nullable Item item, @Nullable MobEffect icon, double value, double min, double max, String translationKey, DoubleUnaryOperator valueConverter) {
-        this.item = item;
-        this.icon = icon;
-        MutableComponent unitComponent = Component.translatable(translationKey.concat(".unit"), Component.literal(ATTRIBUTE_VALUE_FORMAT.format(valueConverter.applyAsDouble(value))).withStyle(categorizeValue(value, min, max))).withStyle(ChatFormatting.GRAY);
-        this.line1 = Component.translatable(translationKey, unitComponent).withStyle(ChatFormatting.WHITE).getVisualOrderText();
+        this(item, icon, line1(value, categorizeValue(value, min, max), translationKey, valueConverter), line2(min, max, valueConverter));
+    }
+
+    private HorseAttributeTooltip(MobEffect icon, double value, String translationKey) {
+        this(null, icon, value, translationKey, DoubleUnaryOperator.identity());
+    }
+
+    private HorseAttributeTooltip(MobEffect icon, double value, String translationKey, DoubleUnaryOperator valueConverter) {
+        this(null, icon, value, translationKey, valueConverter);
+    }
+
+    private HorseAttributeTooltip(Item item, double value, String translationKey, DoubleUnaryOperator valueConverter) {
+        this(item, null, value, translationKey, valueConverter);
+    }
+
+    private HorseAttributeTooltip(@Nullable Item item, @Nullable MobEffect icon, double value, String translationKey, DoubleUnaryOperator valueConverter) {
+        this(item, icon, line1(value, null, translationKey, valueConverter), null);
+    }
+
+    private static Component line1(double value, @Nullable ChatFormatting color, String translationKey, DoubleUnaryOperator valueConverter) {
+        MutableComponent component1 = Component.literal(ATTRIBUTE_VALUE_FORMAT.format(valueConverter.applyAsDouble(value)));
+        if (color != null) component1 = component1.withStyle(color);
+        MutableComponent component2 = Component.translatable(translationKey.concat(".unit"), component1).withStyle(ChatFormatting.GRAY);
+        return Component.translatable(translationKey, component2).withStyle(ChatFormatting.WHITE);
+    }
+
+    private static Component line2(double min, double max, DoubleUnaryOperator valueConverter) {
         MutableComponent minComponent = Component.translatable("horse.tooltip.min", Component.literal(ATTRIBUTE_VALUE_FORMAT.format(valueConverter.applyAsDouble(min))).withStyle(ChatFormatting.GRAY)).withStyle(HorseExpert.CONFIG.get(ClientConfig.class).lowValueColor);
         MutableComponent maxComponent = Component.translatable("horse.tooltip.max", Component.literal(ATTRIBUTE_VALUE_FORMAT.format(valueConverter.applyAsDouble(max))).withStyle(ChatFormatting.GRAY)).withStyle(HorseExpert.CONFIG.get(ClientConfig.class).highValueColor);
         MutableComponent separatorComponent = Component.literal("   ").withStyle(ChatFormatting.GRAY);
-        this.line2 = minComponent.append(separatorComponent).append(maxComponent).getVisualOrderText();
-    }
-
-    public FormattedCharSequence line1() {
-        return this.line1;
-    }
-
-    public FormattedCharSequence line2() {
-        return this.line2;
-    }
-
-    @Nullable
-    public Item item() {
-        return this.item;
-    }
-
-    @Nullable
-    public MobEffect icon() {
-        return this.icon;
+        return minComponent.append(separatorComponent).append(maxComponent);
     }
 
     private static ChatFormatting categorizeValue(double value, double min, double max) {
@@ -79,17 +78,26 @@ public class HorseAttributeTooltip implements TooltipComponent {
         return HorseExpert.CONFIG.get(ClientConfig.class).mediumValueColor;
     }
 
-    public static HorseAttributeTooltip healthTooltip(double value) {
+    public static HorseAttributeTooltip healthTooltip(double value, boolean minMax) {
         // half health values as our translation string says hearts
-        return new HorseAttributeTooltip(MobEffects.HEALTH_BOOST, value / 2.0, 7.5, 15.0, "horse.tooltip.health");
+        if (minMax) {
+            return new HorseAttributeTooltip(MobEffects.HEALTH_BOOST, value / 2.0, 7.5, 15.0, "horse.tooltip.health");
+        }
+        return new HorseAttributeTooltip(MobEffects.HEALTH_BOOST, value / 2.0, "horse.tooltip.health");
     }
 
-    public static HorseAttributeTooltip speedTooltip(double value) {
-        return new HorseAttributeTooltip(MobEffects.MOVEMENT_SPEED, value, 0.1125, 0.3375, "horse.tooltip.speed", d -> d * 43.17);
+    public static HorseAttributeTooltip speedTooltip(double value, boolean minMax) {
+        if (minMax) {
+            return new HorseAttributeTooltip(MobEffects.MOVEMENT_SPEED, value, 0.1125, 0.3375, "horse.tooltip.speed", d -> d * 43.17);
+        }
+        return new HorseAttributeTooltip(MobEffects.MOVEMENT_SPEED, value, "horse.tooltip.speed", d -> d * 43.17);
     }
 
-    public static HorseAttributeTooltip jumpHeightTooltip(double value) {
-        return new HorseAttributeTooltip(MobEffects.JUMP, value, 0.4, 1.0, "horse.tooltip.jump_height", d -> Math.pow(d, 1.7) * 5.293);
+    public static HorseAttributeTooltip jumpHeightTooltip(double value, boolean minMax) {
+        if (minMax) {
+            return new HorseAttributeTooltip(MobEffects.JUMP, value, 0.4, 1.0, "horse.tooltip.jump_height", d -> Math.pow(d, 1.7) * 5.293);
+        }
+        return new HorseAttributeTooltip(MobEffects.JUMP, value, "horse.tooltip.jump_height", d -> Math.pow(d, 1.7) * 5.293);
     }
 
     public static HorseAttributeTooltip strengthTooltip(double value) {

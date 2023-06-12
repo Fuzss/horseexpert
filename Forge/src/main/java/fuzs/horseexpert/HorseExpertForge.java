@@ -1,9 +1,6 @@
 package fuzs.horseexpert;
 
-import fuzs.horseexpert.data.ModItemTagsProvider;
-import fuzs.horseexpert.data.ModLanguageProvider;
-import fuzs.horseexpert.data.ModModelProvider;
-import fuzs.horseexpert.data.ModRecipeProvider;
+import fuzs.horseexpert.data.*;
 import fuzs.horseexpert.handler.CuriosCapabilityHandler;
 import fuzs.horseexpert.init.ForgeModRegistry;
 import fuzs.puzzleslib.api.core.v1.ModConstructor;
@@ -51,9 +48,10 @@ public class HorseExpertForge {
         final PackOutput packOutput = dataGenerator.getPackOutput();
         final CompletableFuture<HolderLookup.Provider> lookupProvider = evt.getLookupProvider();
         final ExistingFileHelper fileHelper = evt.getExistingFileHelper();
-        dataGenerator.addProvider(true, new ModRecipeProvider(packOutput));
-        dataGenerator.addProvider(true, new ModLanguageProvider(packOutput, HorseExpert.MOD_ID));
+        dataGenerator.addProvider(true, new ModEntityTypeTagsProvider(packOutput, lookupProvider, HorseExpert.MOD_ID, fileHelper));
         dataGenerator.addProvider(true, new ModItemTagsProvider(packOutput, lookupProvider, HorseExpert.MOD_ID, fileHelper));
+        dataGenerator.addProvider(true, new ModLanguageProvider(packOutput, HorseExpert.MOD_ID));
         dataGenerator.addProvider(true, new ModModelProvider(packOutput, HorseExpert.MOD_ID, fileHelper));
+        dataGenerator.addProvider(true, new ModRecipeProvider(packOutput));
     }
 }
