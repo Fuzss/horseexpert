@@ -17,14 +17,14 @@ public class HorseExpert implements ModConstructor {
     public static final ConfigHolder CONFIG = ConfigHolder.builder(MOD_ID).client(ClientConfig.class);
 
     @Override
+    public void onConstructMod() {
+        ModRegistry.touch();
+    }
+
+    @Override
     public void onBuildCreativeModeTabContents(BuildCreativeModeTabContentsContext context) {
         context.registerBuildListener(CreativeModeTabs.TOOLS_AND_UTILITIES, (itemDisplayParameters, output) -> {
             output.accept(ModRegistry.MONOCLE_ITEM.get());
         });
-    }
-
-    @Override
-    public void onConstructMod() {
-        ModRegistry.touch();
     }
 }

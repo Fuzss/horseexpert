@@ -1,6 +1,5 @@
 package fuzs.horseexpert.data;
 
-import fuzs.horseexpert.init.ForgeModRegistry;
 import fuzs.horseexpert.init.ModRegistry;
 import fuzs.puzzleslib.api.data.v1.AbstractTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -17,7 +16,7 @@ public class ModItemTagsProvider extends AbstractTagProvider.Items {
 
     @Override
     protected void addTags(HolderLookup.Provider provider) {
-        this.tag(ForgeModRegistry.CURIOS_HEAD_TAG).add(ModRegistry.MONOCLE_ITEM.get());
-        this.tag(ForgeModRegistry.TRINKETS_HEAD_FACE_TAG).add(ModRegistry.MONOCLE_ITEM.get());
+        this.tag("curios:head").add(ModRegistry.MONOCLE_ITEM.get());
+        this.tag("trinkets:head/face").add(ModRegistry.MONOCLE_ITEM.get());
     }
 }

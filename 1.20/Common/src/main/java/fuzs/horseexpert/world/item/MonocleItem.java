@@ -2,6 +2,7 @@ package fuzs.horseexpert.world.item;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class MonocleItem extends Item {
+    public static final MutableComponent MONOCLE_TOOLTIP_COMPONENT = Component.translatable("item.horseexpert.monocle.tooltip").withStyle(ChatFormatting.GRAY);
 
     public MonocleItem(Properties properties) {
         super(properties);
@@ -18,6 +20,6 @@ public class MonocleItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
-        tooltip.add(Component.translatable("item.horseexpert.monocle.tooltip").withStyle(ChatFormatting.GRAY));
+        tooltip.add(MONOCLE_TOOLTIP_COMPONENT);
     }
 }

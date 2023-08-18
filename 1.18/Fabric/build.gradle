@@ -19,6 +19,9 @@ dependencies {
     // Extensible Enums
 //    modApi(include(libs.extensibleenums.fabric.get()))
 
+    // Trinkets
+    modApi libs.trinkets.fabric
+
     // Quality of Life Mods
     versionCatalog.findLibrary("modmenu.fabric").ifPresent {
         modLocalRuntime(it)

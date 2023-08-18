@@ -2,7 +2,6 @@ package fuzs.horseexpert;
 
 import fuzs.horseexpert.data.*;
 import fuzs.horseexpert.handler.CuriosCapabilityHandler;
-import fuzs.horseexpert.init.ForgeModRegistry;
 import fuzs.puzzleslib.api.core.v1.ModConstructor;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
@@ -29,7 +28,6 @@ public class HorseExpertForge {
     @SubscribeEvent
     public static void onConstructMod(final FMLConstructModEvent evt) {
         ModConstructor.construct(HorseExpert.MOD_ID, HorseExpert::new);
-        ForgeModRegistry.touch();
         registerHandlers();
     }
 
